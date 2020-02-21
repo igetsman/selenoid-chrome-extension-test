@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:2.5"
+    }
+}
+apply plugin: 'java'
+apply plugin: 'io.qameta.allure'
+sourceCompatibility = 8
+targetCompatibility = 8
+group 'com.example.wb-test'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.8
+wrapper.gradleVersion = '5.5.1'
+def cucumberVersion = '4.7.2'
+def junitVersion = '5.5.0'
+def selenideVersion = '5.5.0'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+dependencies {
+    testCompile group: 'ru.yandex.qatools.allure', name: 'allure-junit-adaptor', version: '1.5.4'
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${junitVersion}"
+    compile "com.codeborne:selenide:${selenideVersion}"
+}
+
+
+allure {
+    autoconfigure = true
+    version = '2.7.0'
+    resultsDir = file('build/allure-results/'+new Date().format('yyyyMMddHHmmss'))
+    useJUnit4 {
+        version = '2.7.0'
+    }
+
+}
+
+test {
+  //  systemProperty 'selenide.remote', System.getProperty('selenide.remote')
+  //  systemProperty 'selenide.browser', System.getProperty('selenide.browser')
+    systemProperty 'plugin.chrome.path', "Google-Translate_v2.0.8.crx"
+    useJUnit()
+}
+test.finalizedBy 'allureReport'
